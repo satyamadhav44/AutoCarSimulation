@@ -27,52 +27,71 @@ public class CarOperations {
         return userCar;
     }
 
+    /*
+    * Method signature:-
+    * cars     : a list of cars details based on the user entry
+    * input    : input for user
+    * simField : a 2D array depicting simulation filed
+    * rows     : max row of field
+    * columns  : max column of filed
+    * */
     public static int runCarSimulation(List<Car> cars, BufferedReader input, int[][] simFiled, int rows, int columns) throws IOException {
         int reRunChoice = 0;
         /* Begin simulation */
-        /* placing the cars on the filed
-         * marking the location in the filed by carId */
+        /* start by placing the car in the fields to mark the car's initial positions */
         int uniqueCarId = 1;
         for (Car car : cars) {
+            // assigning a unique integer id to each car
             car.setCarId(uniqueCarId++);
+            // the below property tracks the carId of collided car
             car.setCollideCarId(0);
             simFiled[car.getX_direction()][car.getY_direction()] = car.getCarId();
         }
-        // find the longest route among all the cars
+        // find the longest route among all the cars to keep the steps running
         int longestRoute = cars.stream().map(Car::getRunSteps).max(Comparator.comparingInt(String::length)).get().length();
-        int steps = 0; // to track the loop for car movement
-        boolean checkCar = false;
+        int steps = 0; // to progress car movement for each step
+        // step zero to last step of route to complete the simulation until destination and to identify collision between cars
         while (steps < longestRoute) {
 
+            // check for collision between cars for each step.
             checkCollision(simFiled, cars, (steps));
 
             //now move the car and update the field position based on car direction.
             for (Car car : cars) {
                 //update the collide status of the other car
                 int colloideCarId = car.getCollideCarId();
+                /* the below statements sre setting collide property of each car with carID of it's collided car,
+                   which is used later to track in check collision method */
                 Optional<Car> colloidCar = cars.stream().filter(c -> c.getCarId() == colloideCarId).findAny();
                 colloidCar.ifPresent(value -> value.setCollideCarId(car.getCarId()));
+                 /*below condition checks the step count against each car route to avoid over run and
+                 *  if either the car route is exhausted or car met with collision further execution is skipped for those cars
+                 * */
                 if (steps < car.getRunSteps().length() && colloideCarId == 0) {
+                    // moving instruction per car
                     char instruction = car.getRunSteps().charAt(steps);
+                    // to identify and execute the car movement of each instruction type.
                     switch (instruction) {
                         case 'F':
-
                             if (car.getCarDir().equals(Direction.N.getValue())) {
-                                // north : incrementing Y axis
+                                // North : incrementing Y axis
                                 int increment = car.getY_direction() + 1;
                                 simFiled = car.move(simFiled, rows, columns, car.getX_direction(), increment);
                                 simFiled[car.getX_direction()][car.getY_direction()] = car.getCarId();
-                            } else if (car.getCarDir().equals(Direction.S.getValue())) {
-                                // south : decrement Y axis
+                            }
+                            else if (car.getCarDir().equals(Direction.S.getValue())) {
+                                // South : decrement Y axis
                                 int decrement = (car.getY_direction() - 1 <= 0) ? car.getY_direction() : car.getY_direction() - 1;
                                 simFiled = car.move(simFiled, rows, columns, car.getX_direction(), decrement);
                                 simFiled[car.getX_direction()][car.getY_direction()] = car.getCarId();
-                            } else if (car.getCarDir().equals(Direction.E.getValue())) {
+                            }
+                            else if (car.getCarDir().equals(Direction.E.getValue())) {
                                 // East : increment X axis
                                 int increment = car.getX_direction() + 1;
                                 simFiled = car.move(simFiled, rows, columns, increment, car.getY_direction());
                                 simFiled[car.getX_direction()][car.getY_direction()] = car.getCarId();
-                            } else {
+                            }
+                            else {
                                 // West : decrement X axis
                                 int decrement = (car.getX_direction() - 1 <= 0) ? car.getX_direction() : car.getX_direction() - 1;
                                 simFiled = car.move(simFiled, rows, columns, decrement, car.getY_direction());
@@ -80,7 +99,7 @@ public class CarOperations {
                             }
                             break;
                         case 'R':
-                            // turning clockwise
+                            // turning clockwise checking the current car direction
                             if (car.getCarDir().equals(Direction.N.getValue())) {
                                 car.setCarDir(Direction.E.getValue());
                             } else if (car.getCarDir().equals(Direction.E.getValue())) {
@@ -92,7 +111,7 @@ public class CarOperations {
                             }
                             break;
                         case 'L':
-                            // counter clockwise
+                            // turning counterclockwise  checking the current car direction
                             if (car.getCarDir().equals(Direction.N.getValue())) {
                                 car.setCarDir(Direction.W.getValue());
                             } else if (car.getCarDir().equals(Direction.W.getValue())) {
@@ -106,9 +125,9 @@ public class CarOperations {
                     }
                 }
             }
-            steps++;
+            ++steps;
         }
-
+        // print the final location with coordinates and direction of each car
         System.out.println(resultMsg);
         for (Car car : cars) {
             System.out.println("- " + car.getName() + ", (" + car.getX_direction() + "," + car.getY_direction() + ") " + car.getCarDir());
@@ -125,10 +144,12 @@ public class CarOperations {
         for (Car car : cars) {
             int car_x = car.getX_direction();
             int car_y = car.getY_direction();
-            int carId = field[car_x][car_y];
+            int carId = field[car_x][car_y]; // get the carID of a car already at this location if any
+            // cars are said to be collided when field having an exiting carId is overwritten by a new carId .
             if (field[car_x][car_y] != car.getCarId() && car.getCollideCarId() == 0) {
+                //finding the car property of existing carID
                 Optional<Car> otherCar = cars.stream().filter(c -> c.getCarId() == carId).findAny();
-                otherCar.ifPresent(value -> System.out.println("- " + car.getName() + ", collides with " + value.getName() + " at (" + car_x + "," + car_y + ") at step " + step));
+                otherCar.ifPresent(value -> System.out.println("- " + value.getName() + ", collides with " + car.getName() + " at (" + car_x + "," + car_y + ") at step " + step));
                 System.out.println();// new line
             }
         }

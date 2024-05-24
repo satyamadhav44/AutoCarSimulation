@@ -28,7 +28,7 @@ public class Car {
         x_direction = move_x;
         y_direction = move_y;
 
-        // check for out of bound cases
+        // check for out of bound and normalise
         x_direction = (x_direction + field_x) % field_x;
         y_direction = (y_direction + field_x) % field_y;
         if (simfiled[x_direction][y_direction] != 0) {
