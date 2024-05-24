@@ -15,4 +15,5 @@ public class UserMsgPrompts {
     public final static String continueSim = "[1] Start over ";
     public final static String exit = "[2] Exit ";
     public final static String exitMsg = "Thank you for running the simulation. Goodbye ! ";
+    public final static String resultMsg = "After simulation, the result is:";
 }

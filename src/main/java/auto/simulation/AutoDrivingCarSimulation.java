@@ -21,12 +21,21 @@ public class AutoDrivingCarSimulation {
         boolean simRun = true;
         /* the loop will run as long as the user wants to continue */
         do {
+            cars.clear();
             System.out.println(welcomeMsg);
             System.out.println(inputPrompt);
             String[] simField = userInput.readLine().split("\\s");
             /*create a simulation field*/
-            System.out.println(inputMsg + simField[0] + "x" + simField[1]);
-            int[][] simulationField = new int[Integer.parseInt(simField[0].strip())][Integer.parseInt(simField[1].strip())];
+            System.out.println(inputMsg + simField[0] + " x " + simField[1]);
+            int rows = Integer.parseInt(simField[0].strip());
+            int columns = Integer.parseInt(simField[1].strip());
+            int[][] simulationField = new int[rows][columns];
+            /*initialising the 2D filed matrix with 0's  */
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < columns; j++) {
+                    simulationField[i][j] = 0;
+                }
+            }
             boolean opSelect = true;
             do {
                 System.out.println(selOptMsg);
@@ -39,12 +48,12 @@ public class AutoDrivingCarSimulation {
                         System.out.println(carInfoDisp);
                         for (Car car : cars) {
                             System.out.println("- " + car.getName() + " " + "(" + car.getX_direction() + "," + car.getY_direction() + ")" +
-                                    " " + car.getCarInitialDir() + ", " + car.getRunSteps());
+                                    " " + car.getCarDir() + ", " + car.getRunSteps());
                             System.out.println();
                         }
                         break;
                     case 2:
-                        int rerun = CarOperations.runCarSimulation(cars, userInput, simulationField);
+                        int rerun = CarOperations.runCarSimulation(cars, userInput, simulationField, rows, columns);
                         if (rerun == 1) opSelect = false;
                         if (rerun == 2) {
                             System.out.println(exitMsg);
