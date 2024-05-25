@@ -38,8 +38,8 @@ public class CarOperations {
     public static int runCarSimulation(List<Car> cars, BufferedReader input, int[][] simFiled, int rows, int columns) throws IOException {
         int reRunChoice = 0;
         /* Begin simulation */
-        /* start by placing the car in the fields to mark the car's initial positions */
         int uniqueCarId = 1;
+        /* below loop depicts placing the car in the field to mark the car's initial positions */
         for (Car car : cars) {
             // assigning a unique integer id to each car
             car.setCarId(uniqueCarId++);
@@ -144,7 +144,7 @@ public class CarOperations {
             int carId = field[car_x][car_y]; // get the carID of a car already at this location if any
             // cars are said to be collided when field having an exiting carId is overwritten by a new carId .
             if (field[car_x][car_y] != car.getCarId() && car.getCollideCarId() == 0) {
-                //finding the car property of existing carID
+                //finding the car related with carID
                 Optional<Car> otherCar = cars.stream().filter(c -> c.getCarId() == carId).findAny();
                 otherCar.ifPresent(value -> System.out.println("- " + value.getName() + ", collides with " + car.getName() + " at (" + car_x + "," + car_y + ") at step " + step));
                 System.out.println();// new line
