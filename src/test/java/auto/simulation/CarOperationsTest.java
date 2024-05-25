@@ -30,24 +30,24 @@ class CarOperationsTest {
             {0,0,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0}
     };
-    // simulation with one car
+    // simulation with car A at (0,0)W
     @Test
     void testRunCarSimulation1() throws IOException {
 
         ArrayList<Car> cars = new ArrayList<>();
         cars.add(Car.builder()
-                .carDir("N")
+                .carDir("W")
                 .carId(1)
                 .collideCarId(0)
                 .name("A")
                 .runSteps("FFRFFFFRRL")
-                .x_dx(1)
-                .y_dy(2)
+                .x_dx(0)
+                .y_dy(0)
                 .build());
         CarOperations.runCarSimulation(cars, new BufferedReader(new StringReader("2"), 1),
                simFiled, 10, 10);
     }
-    // simulation with 2 cars A and B , to check for collision
+    // simulation with 2 cars A at (1,2)N and B at (7,8)W , to check for collision
     @Test
     void testRunCarSimulation2() throws IOException {
 
@@ -74,7 +74,7 @@ class CarOperationsTest {
                 simFiled, 10, 10);
     }
 
-    // simulation with 3 cars where car A,C collide and B completes its route
+    // simulation with 3 cars where car A at (1,2)N and B at (7,8)W and C at (3,8)S where A collides with C
     @Test
     void testRunCarSimulation3() throws IOException {
 
