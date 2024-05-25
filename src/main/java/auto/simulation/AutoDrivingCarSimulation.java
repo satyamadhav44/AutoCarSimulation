@@ -47,7 +47,7 @@ public class AutoDrivingCarSimulation {
                         cars.add(CarOperations.addUserCar(userInput));
                         System.out.println(carInfoDisp);
                         for (Car car : cars) {
-                            System.out.println("- " + car.getName() + " " + "(" + car.getX_direction() + "," + car.getY_direction() + ")" +
+                            System.out.println("- " + car.getName() + " " + "(" + car.getX_dx() + "," + car.getY_dy() + ")" +
                                     " " + car.getCarDir() + ", " + car.getRunSteps());
                             System.out.println();
                         }
